@@ -1,0 +1,5 @@
+name: BTDS
+author: MangaGaming
+main: com.mguhc.BeatTheDS
+version: 1.0.0
+depend: [TitleManager]

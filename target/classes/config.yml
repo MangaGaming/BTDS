@@ -1,0 +1,134 @@
+# ============================================
+# Beat The Santa - Configuration
+# ============================================
+
+game:
+  pvp-delay-minutes: 30
+  world-name: "world"
+  spawn-x: 0
+  spawn-y: 80
+  spawn-z: -6
+
+santa:
+  max-health: 40
+  effects:
+    - INCREASE_DAMAGE
+    - SPEED
+    - FAST_DIGGING
+  gear:
+    helmet: IRON_HELMET
+    chestplate: DIAMOND_CHESTPLATE
+    leggings: IRON_LEGGINGS
+    boots: IRON_BOOTS
+    pickaxe-enchant-level: 3
+    golden-apples: 5
+    food-amount: 64
+    books: 7
+
+lutin:
+  extra-health-chance: 15
+  extra-health-amount: 40
+  speed-chance: 50
+  effects:
+    - DAMAGE_RESISTANCE
+    - SPEED
+  gear:
+    helmet: IRON_HELMET
+    chestplate: IRON_CHESTPLATE
+    leggings: IRON_LEGGINGS
+    boots: IRON_BOOTS
+    pickaxe-enchant-level: 3
+    golden-apples: 3
+    food-amount: 64
+    books: 3
+
+lutin-purificateur:
+  percentage: 25
+  max-health: 30
+  max-resurrections: 5
+  health-loss-per-resurrection: 2.0
+  effects:
+    - DAMAGE_RESISTANCE
+    - INCREASE_DAMAGE
+    - SPEED
+
+meetup:
+  gear:
+    helmet: DIAMOND_HELMET
+    helmet-prot: 3
+    chestplate: DIAMOND_CHESTPLATE
+    chestplate-prot: 2
+    leggings: DIAMOND_LEGGINGS
+    leggings-prot: 3
+    boots: DIAMOND_BOOTS
+    boots-prot: 2
+    sword: DIAMOND_SWORD
+    sword-sharp: 3
+    pickaxe: DIAMOND_PICKAXE
+    pickaxe-eff: 3
+    golden-apples: 12
+    food-amount: 64
+    wood-amount: 64
+    bow: true
+    bow-power: 3
+    arrows: 64
+
+teleport:
+  min-x: 400
+  max-x: 601
+  min-z: 400
+  max-z: 601
+  y: 100
+  resistance-duration: 100
+  resistance-level: 255
+
+sanctuaries:
+  rouge:
+    x: 50
+    y: 4
+    z: 50
+  bleu:
+    x: 50
+    y: 4
+    z: -50
+  vert:
+    x: -50
+    y: 4
+    z: 50
+  jaune:
+    x: -50
+    y: 4
+    z: -50
+  noir:
+    x: -1
+    y: 4
+    z: -1
+  capture-ticks: 5
+  seconds-per-point-normal: 1.8
+  seconds-per-point-noir: 3.0
+
+darkness-bar:
+  max-hits: 300
+
+chest:
+  x: 0
+  y: 108
+  z: -43
+  lockpick-range-x-min: -1
+  lockpick-range-x-max: 1
+  lockpick-range-z-min: -44
+  lockpick-range-z-max: -42
+  lockpick-duration-seconds: 60
+  lockcheck-interval-ticks: 5
+
+day-cycle:
+  duration-minutes: 15
+
+dash:
+  cooldown-minutes: 3
+  power: 5.0
+  y-boost: 0.4
+
+shield:
+  duration-ticks: 200
+  amplifier: 100
