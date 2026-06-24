@@ -2,7 +2,7 @@ package com.mguhc.listeners;
 
 import com.mguhc.BeatTheDS;
 import com.mguhc.GameState;
-import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
+import com.mguhc.effects.EffectsManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,10 +39,9 @@ public class DoubleDamageListener implements Listener {
 
         int displayCount = (count - 1) % 20 + 1;
 
-        TitleManagerAPI api = BeatTheDS.api;
-        if (api != null) {
-            api.sendActionbar(player, "§aCoup : §f" + displayCount + "§a/20");
-        }
+        plugin.getEffectsManager().setActionBar(player,
+                "§aCoup : §f" + displayCount + "§a/20",
+                EffectsManager.ActionBarPriority.LOW);
 
         if (count % 20 == 0) {
             event.setDamage(event.getDamage() * 2.0);

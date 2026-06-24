@@ -6,16 +6,19 @@ import com.mguhc.effects.EffectsManager;
 import com.mguhc.effects.MessageManager;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 public class BarreListener implements Listener {
@@ -28,6 +31,17 @@ public class BarreListener implements Listener {
 
     public BarreListener(BeatTheDS plugin) {
         this.plugin = plugin;
+        removeGoldSwordRecipes();
+    }
+
+    private void removeGoldSwordRecipes() {
+        Iterator<org.bukkit.inventory.Recipe> it = Bukkit.recipeIterator();
+        while (it.hasNext()) {
+            org.bukkit.inventory.Recipe recipe = it.next();
+            if (recipe.getResult().getType() == Material.GOLD_SWORD) {
+                it.remove();
+            }
+        }
     }
 
     public void reset() {
@@ -49,7 +63,11 @@ public class BarreListener implements Listener {
         Player player = (Player) event.getEntity();
         Player damager = (Player) event.getDamager();
 
-        if (!plugin.isLutinPurificateur(damager)) return;
+        ItemStack itemInHand = damager.getItemInHand();
+        boolean isLutinPuri = plugin.isLutinPurificateur(damager);
+        boolean isGoldSword = itemInHand != null && itemInHand.getType() == Material.GOLD_SWORD;
+
+        if (!isLutinPuri && !isGoldSword) return;
 
         UUID santaUUID = plugin.getSantaUUID();
         if (santaUUID == null || !player.getUniqueId().equals(santaUUID)) return;

@@ -56,21 +56,22 @@ public class UHCScoreboard {
                 objective.getScore(ChatColor.GRAY + "§f______________").setScore(score--);
                 objective.getScore("§6Joueurs §2: " + getOnlinePlayersString()).setScore(score--);
                 objective.getScore("§6Lutin §2: " + getLutinString()).setScore(score--);
-                objective.getScore("§6Santa §2: " + getSantaString()).setScore(score--);
+                objective.getScore("§6Santa §2: " + getSantaString()).setScore(score);
 
                 if (plugin.sanctuaireManager != null) {
                     objective.getScore(ChatColor.GRAY + "§f§f§f______________").setScore(score--);
-                    addSanctuaireLine(objective, "rouge", "§c", score--);
-                    addSanctuaireLine(objective, "bleu", "§9", score--);
-                    addSanctuaireLine(objective, "vert", "§a", score--);
-                    addSanctuaireLine(objective, "jaune", "§e", score--);
-                    if (plugin.sanctuaireManager.isBlackUnlocked()) {
+                    if (plugin.sanctuaireManager.allFourCaptured()) {
                         addSanctuaireLine(objective, "noir", "§8", score--);
+                    } else {
+                        addSanctuaireLine(objective, "rouge", "§c", score--);
+                        addSanctuaireLine(objective, "bleu", "§9", score--);
+                        addSanctuaireLine(objective, "vert", "§a", score--);
+                        addSanctuaireLine(objective, "jaune", "§e", score--);
+                        if (plugin.sanctuaireManager.isBlackUnlocked()) {
+                            addSanctuaireLine(objective, "noir", "§8", score--);
+                        }
                     }
                 }
-
-                objective.getScore(ChatColor.GRAY + "§f§f______________").setScore(score--);
-                objective.getScore("§6Kills §2: " + getKillsString(playerID)).setScore(score);
 
                 updateNametags(scoreboard);
                 player.setScoreboard(scoreboard);
@@ -115,10 +116,6 @@ public class UHCScoreboard {
                 lutinTeam.addEntry(p.getName());
             }
         }
-    }
-
-    private String getKillsString(UUID playerID) {
-        return String.valueOf(plugin.getPlayerManager().getKills(playerID));
     }
 
     private String getLutinString() {

@@ -30,25 +30,6 @@ public class BossBarManager {
     }
 
     private void updateBar() {
-        Player santa = plugin.getSanta();
-        if (santa == null || !santa.isOnline()) {
-            return;
-        }
-
-        double health = santa.getHealth();
-        double maxHealth = santa.getMaxHealth();
-        int hearts = (int) Math.ceil(health / 2);
-        int percentage = (int) Math.max(0, Math.min(100, (health / maxHealth) * 100));
-
-        String bar = createProgressBar(percentage, 20);
-        String title = "§c§l❤ Père Noël §7- §f" + hearts + "❤ " + bar;
-
-        TitleManagerAPI api = BeatTheDS.api;
-        if (api != null) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                api.sendActionbar(p, title);
-            }
-        }
     }
 
     private String createProgressBar(int percentage, int totalBars) {

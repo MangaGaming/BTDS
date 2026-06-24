@@ -4,13 +4,84 @@ import com.mguhc.BeatTheDS;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class EffectsManager {
 
+    public enum ActionBarPriority {
+        LOW(0),
+        NORMAL(1),
+        HIGH(2);
+
+        private final int level;
+        ActionBarPriority(int level) { this.level = level; }
+        public int getLevel() { return level; }
+    }
+
     private final BeatTheDS plugin;
+    private final Map<UUID, Map<ActionBarPriority, String>> actionBarMessages = new HashMap<>();
 
     public EffectsManager(BeatTheDS plugin) {
         this.plugin = plugin;
+        startActionBarTask();
+    }
+
+    private void startActionBarTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    String message = getHighestMessage(p.getUniqueId());
+                    if (message != null) {
+                        TitleManagerAPI api = BeatTheDS.api;
+                        if (api != null) {
+                            api.sendActionbar(p, message);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    private String getHighestMessage(UUID uuid) {
+        Map<ActionBarPriority, String> messages = actionBarMessages.get(uuid);
+        if (messages == null) return null;
+
+        ActionBarPriority highest = null;
+        for (ActionBarPriority priority : messages.keySet()) {
+            if (highest == null || priority.getLevel() > highest.getLevel()) {
+                highest = priority;
+            }
+        }
+        return highest != null ? messages.get(highest) : null;
+    }
+
+    public void setActionBar(Player player, String message, ActionBarPriority priority) {
+        actionBarMessages.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
+                .put(priority, message);
+    }
+
+    public void setActionBar(String message, ActionBarPriority priority) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            setActionBar(p, message, priority);
+        }
+    }
+
+    public void clearActionBar(Player player, ActionBarPriority priority) {
+        Map<ActionBarPriority, String> messages = actionBarMessages.get(player.getUniqueId());
+        if (messages != null) {
+            messages.remove(priority);
+        }
+    }
+
+    public void clearActionBar(ActionBarPriority priority) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            clearActionBar(p, priority);
+        }
     }
 
     public void sendTitle(Player player, String title, String subtitle) {
@@ -23,19 +94,6 @@ public class EffectsManager {
     public void sendTitle(String title, String subtitle) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             sendTitle(p, title, subtitle);
-        }
-    }
-
-    public void sendActionBar(Player player, String message) {
-        TitleManagerAPI api = BeatTheDS.api;
-        if (api != null) {
-            api.sendActionbar(player, message);
-        }
-    }
-
-    public void sendActionBar(String message) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            sendActionBar(p, message);
         }
     }
 

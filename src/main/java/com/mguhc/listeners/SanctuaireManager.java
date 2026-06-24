@@ -3,9 +3,12 @@ package com.mguhc.listeners;
 import com.mguhc.BeatTheDS;
 import com.mguhc.GameState;
 import com.mguhc.config.GameConfig;
+import com.mguhc.effects.EffectsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -171,7 +174,29 @@ public class SanctuaireManager implements Listener {
         }
     }
 
+    public void spawnBanners() {
+        Map<String, DyeColor> bannerColors = new HashMap<>();
+        bannerColors.put("rouge", DyeColor.RED);
+        bannerColors.put("bleu", DyeColor.BLUE);
+        bannerColors.put("vert", DyeColor.GREEN);
+        bannerColors.put("jaune", DyeColor.YELLOW);
+        bannerColors.put("noir", DyeColor.BLACK);
+
+        for (Map.Entry<String, Location> entry : sanctuaires.entrySet()) {
+            String name = entry.getKey();
+            Location loc = entry.getValue();
+            Block block = loc.getBlock();
+            if (block.getType() != Material.STANDING_BANNER && block.getType() != Material.WALL_BANNER) {
+                block.setType(Material.STANDING_BANNER);
+                Banner banner = (Banner) block.getState();
+                banner.setBaseColor(bannerColors.get(name));
+                banner.update();
+            }
+        }
+    }
+
     public void startCaptureSystem() {
+        spawnBanners();
         int ticks = plugin.getGameConfig().getSanctuaryCaptureTicks();
 
         captureTask = new BukkitRunnable() {
@@ -196,17 +221,21 @@ public class SanctuaireManager implements Listener {
                         int currentTicks = timeAccumulated.get(sanctuaire);
                         timeAccumulated.put(sanctuaire, currentTicks + 1);
 
-                        double secondsPerPoint = "noir".equals(sanctuaire)
-                                ? plugin.getGameConfig().getSanctuarySecondsPerPointNoir()
-                                : plugin.getGameConfig().getSanctuarySecondsPerPointNormal();
+                        double secondsPerPoint;
+                        if (plugin.isMeetupEnabled()) {
+                            secondsPerPoint = 0.05;
+                        } else {
+                            secondsPerPoint = "noir".equals(sanctuaire)
+                                    ? plugin.getGameConfig().getSanctuarySecondsPerPointNoir()
+                                    : plugin.getGameConfig().getSanctuarySecondsPerPointNormal();
+                        }
                         int totalPoints = (int) ((currentTicks + 1) * 0.05 / secondsPerPoint);
                         captureProgress.put(sanctuaire, Math.min(100, totalPoints));
 
                         int percentage = Math.min(100, totalPoints);
-                        if (percentage % 25 == 0 && percentage > 0 && percentage < 100) {
-                            plugin.getEffectsManager().sendActionBar(santa,
-                                    "§d§lCapture §f" + sanctuaire + " §7- §f" + percentage + "%");
-                        }
+                        plugin.getEffectsManager().setActionBar(santa,
+                                "§d§lCapture §f" + sanctuaire + " §7- §f" + percentage + "%",
+                                EffectsManager.ActionBarPriority.NORMAL);
 
                         if (totalPoints >= 100 && !captured.contains(sanctuaire)) {
                             captured.add(sanctuaire);
@@ -261,5 +290,10 @@ public class SanctuaireManager implements Listener {
 
     public boolean isBlackUnlocked() {
         return blackUnlocked;
+    }
+
+    public boolean allFourCaptured() {
+        return captured.contains("rouge") && captured.contains("bleu") &&
+                captured.contains("vert") && captured.contains("jaune");
     }
 }

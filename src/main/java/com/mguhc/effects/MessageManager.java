@@ -40,7 +40,9 @@ public class MessageManager {
 
     public void sendKillScore(Player player, int kills) {
         EffectsManager effects = plugin.getEffectsManager();
-        effects.sendActionBar(player, "§a+1 Kill §7| §fTotal: " + kills);
+        effects.setActionBar(player, "§a+1 Kill §7| §fTotal: " + kills, EffectsManager.ActionBarPriority.LOW);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () ->
+                effects.clearActionBar(player, EffectsManager.ActionBarPriority.LOW), 60L);
     }
 
     public void sendRoleReveal(Player player, String role) {
@@ -89,7 +91,7 @@ public class MessageManager {
 
     public void sendSanctuaryCaptured(String name) {
         EffectsManager effects = plugin.getEffectsManager();
-        effects.sendActionBar("§d§lSanctuaire " + name + " capturé !");
+        effects.sendTitle("§d§lSanctuaire " + name + " capturé !", "");
     }
 
     public void sendDarknessBarBroken() {

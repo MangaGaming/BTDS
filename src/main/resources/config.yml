@@ -84,25 +84,25 @@ teleport:
 
 sanctuaries:
   rouge:
-    x: 50
-    y: 4
-    z: 50
+    x: 1000
+    y: 80
+    z: 1000
   bleu:
-    x: 50
-    y: 4
-    z: -50
+    x: 1000
+    y: 70
+    z: -1000
   vert:
-    x: -50
-    y: 4
-    z: 50
+    x: -1000
+    y: 70
+    z: 1000
   jaune:
-    x: -50
-    y: 4
-    z: -50
+    x: -1000
+    y: 63
+    z: -1000
   noir:
-    x: -1
-    y: 4
-    z: -1
+    x: 23
+    y: 70
+    z: -6
   capture-ticks: 5
   seconds-per-point-normal: 1.8
   seconds-per-point-noir: 3.0

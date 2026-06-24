@@ -39,6 +39,7 @@ public class BeatTheDS extends JavaPlugin implements Listener {
     public CoffreListener coffreListener;
     public LutinPurificateurResurrection resurrectionListener;
     public LutinShieldListener lutinShieldListener;
+    public BlocAmeListener blocAmeListener;
 
     private int timePassed = 0;
     private int dayNumber = 0;
@@ -80,6 +81,7 @@ public class BeatTheDS extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        if (blocAmeListener != null) blocAmeListener.reset();
         resetGame();
     }
 
@@ -104,6 +106,8 @@ public class BeatTheDS extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new HastyBoysScenario(), this);
         getServer().getPluginManager().registerEvents(new NoStoneVariantScenario(), this);
         getServer().getPluginManager().registerEvents(new NotchAppleListener(), this);
+        blocAmeListener = new BlocAmeListener(this);
+        getServer().getPluginManager().registerEvents(blocAmeListener, this);
     }
 
     public void setSanta(Player target) {
@@ -194,7 +198,7 @@ public class BeatTheDS extends JavaPlugin implements Listener {
         }
 
         effectsManager.spawnTeleportEffect(santaPlayer);
-        teleportPlayerToRandomLocation(santaPlayer);
+        santaPlayer.teleport(new Location(Bukkit.getWorld(worldName), -4, 136, -23));
 
         for (UUID uuid : roleManager.getLutinsPuri()) {
             Player p = Bukkit.getPlayer(uuid);
@@ -240,6 +244,25 @@ public class BeatTheDS extends JavaPlugin implements Listener {
 
         bossBarManager.createSantaHealthBar();
         this.sanctuaireManager.startCaptureSystem();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!gameState.isPlaying()) {
+                    this.cancel();
+                    return;
+                }
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    int kills = playerManager.getKills(p);
+                    String footer = "§6Kills §2: " + kills;
+                    String header = "\n§3§lBeat §f§lThe §7§lSanta\n";
+                    if (BeatTheDS.api != null) {
+                        BeatTheDS.api.setHeader(p, header);
+                        BeatTheDS.api.setFooter(p, footer);
+                    }
+                }
+            }
+        }.runTaskTimer(this, 0L, 20L);
     }
 
     public void endGame() {

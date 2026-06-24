@@ -18,8 +18,8 @@ public class HastyBoysScenario implements Listener {
                 || item.getType() == Material.IRON_PICKAXE || item.getType() == Material.DIAMOND_PICKAXE
                 || item.getType() == Material.STONE_AXE
                 || item.getType() == Material.IRON_AXE || item.getType() == Material.DIAMOND_AXE)) {
-            item.addEnchantment(Enchantment.DIG_SPEED, 3); // Efficiency III
-            item.addEnchantment(Enchantment.DURABILITY, 1); // Unbreaking I
+            item.addEnchantment(Enchantment.DIG_SPEED, 2); // Efficiency II
+            item.addEnchantment(Enchantment.DURABILITY, 3); // Unbreaking III
         }
     }
 }
